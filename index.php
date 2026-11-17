@@ -5,6 +5,7 @@ $titulo = "";
 
 if (isset($_POST['titulo'])) {
     $titulo = mysqli_real_escape_string($conn, $_POST['titulo']);
+    $id = isset($_GET['condicao']) ? (int)$_GET['condicao'] : 0;
 }
 
 ?>
@@ -49,9 +50,10 @@ if (isset($_POST['titulo'])) {
     $num = mysqli_num_rows($res);
 
     if ($num > 0) {
+
         while ($linha = mysqli_fetch_assoc($res)) {
             echo "<p>";
-            echo $linha['nome'];
+            echo "<a href='index.php?condicao=" . $linha['id'] . "'>" . $linha['nome'] . "</a>";
             echo "</p>";
             echo "<p>";
             echo $linha['descricao'];
@@ -60,7 +62,9 @@ if (isset($_POST['titulo'])) {
         }
     } else {
         echo "<p> Nenhuma condição de saúde cadastrada. </p>";
+
     }
+    
     ?>
 
     <h2>Condições de saúde cadastradas</h2>
@@ -68,7 +72,7 @@ if (isset($_POST['titulo'])) {
 
     $sql = "SELECT * FROM condicoes_saude";
     ?>
-    
+
 </body>
 
 </html>
