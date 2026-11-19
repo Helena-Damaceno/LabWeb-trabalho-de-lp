@@ -3,6 +3,16 @@ require_once('./conexao.php');
 
 $titulo = "";
 
+$bairro = "";
+$convenio = 0;
+
+if (isset($_POST['bairro'])) {
+    $bairro = mysqli_real_escape_string($conn, $_POST['bairro']);
+}
+if (isset($_POST['convenio'])) {
+    $convenio = (int) $_POST['convenio'];
+}
+
 if (isset($_POST['titulo'])) {
     $titulo = mysqli_real_escape_string($conn, $_POST['titulo']);
     $id = isset($_GET['condicao']) ? (int) $_GET['condicao'] : 0;
@@ -21,7 +31,7 @@ if (isset($_POST['titulo'])) {
 
 <body>
 
-    <div id="cabecalho">
+    <div id="cabeçalho">
 
         <h1>LabWeb</h1>
 
@@ -32,9 +42,26 @@ if (isset($_POST['titulo'])) {
     <div class="pesquisa">
 
         <form method="POST">
-            Informe seu sintoma:
-            <input type="text" name="titulo">
-            <input class="procurar" type="submit" value="Procurar">
+            Sintoma: <input type="text" name="titulo">
+            Bairro: <select name="bairro">
+                <option value="">Todos</option>
+                <?php
+                $r = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
+                while ($b = mysqli_fetch_assoc($r)) {
+                    echo "<option>" . $b['bairro'] . "</option>";
+                }
+                ?>
+            </select>
+            Convênio: <select name="convenio">
+                <option value="0">Todos</option>
+                <?php
+                $r = mysqli_query($conn, "SELECT * FROM convenios");
+                while ($c = mysqli_fetch_assoc($r)) {
+                    echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
+                }
+                ?>
+            </select>
+            <input type="submit" value="Filtrar">
         </form>
 
     </div>
@@ -70,32 +97,29 @@ if (isset($_POST['titulo'])) {
                 echo "Preparo: " . $exame['instrucoes_preparo'] . "</p>";
             }
 
-            $sql3 = "SELECT DISTINCT laboratorios.* FROM laboratorios
+        }
+        $sql3 = "SELECT DISTINCT laboratorios.* FROM laboratorios
          JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
          JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
          WHERE condicao_exame.condicao_id = $id_condicao";
-            $res3 = mysqli_query($conn, $sql3);
 
-            echo "<h4>Laboratórios:</h4>";
-            while ($lab = mysqli_fetch_assoc($res3)) {
-                echo "<p><strong>" . $lab['nome'] . "</strong><br>";
-                echo $lab['endereco'] . " - " . $lab['bairro'] . "<br>";
-                echo "Telefone: " . $lab['telefone'] . "<br>";
-                echo "Prazo do laudo: " . $lab['tempo_entrega_dias'] . " dia(s)</p>";
-            }
-
-            echo "<hr>";
+        if ($bairro != "") {
+            $sql3 = $sql3 . " AND laboratorios.bairro = '$bairro'";
         }
-    } else {
-        echo "<p> Nenhuma condição de saúde cadastrada. </p>";
+        if ($convenio > 0) {
+            $sql3 = $sql3 . " AND laboratorios.id IN (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
+        }
 
+        $res3 = mysqli_query($conn, $sql3);
+
+        echo "<h4>Laboratórios:</h4>";
+        while ($lab = mysqli_fetch_assoc($res3)) {
+            echo "<p><strong>" . $lab['nome'] . "</strong><br>";
+            echo $lab['endereco'] . " - " . $lab['bairro'] . "<br>";
+            echo "Telefone: " . $lab['telefone'] . "<br>";
+            echo "Prazo do laudo: " . $lab['tempo_entrega_dias'] . " dia(s)</p>";
+        }
     }
-
-    ?>
-
-    <h2>Condições de saúde cadastradas</h2>
-    <?php
-
     $sql = "SELECT * FROM condicoes_saude";
     ?>
 
