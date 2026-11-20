@@ -2,20 +2,13 @@
 require_once('./conexao.php');
 
 $titulo = "";
-
-$bairro = "";
 $convenio = 0;
-
-if (isset($_POST['bairro'])) {
-    $bairro = mysqli_real_escape_string($conn, $_POST['bairro']);
-}
-if (isset($_POST['convenio'])) {
-    $convenio = (int) $_POST['convenio'];
-}
+$bairro = "";
 
 if (isset($_POST['titulo'])) {
     $titulo = mysqli_real_escape_string($conn, $_POST['titulo']);
-    $id = isset($_GET['condicao']) ? (int) $_GET['condicao'] : 0;
+    $convenio = (int) $_POST['convenio'];
+    $bairro = mysqli_real_escape_string($conn, $_POST['bairro']);
 }
 
 ?>
@@ -43,12 +36,23 @@ if (isset($_POST['titulo'])) {
 
         <form method="POST">
             Sintoma: <input type="text" name="titulo">
+
+            <select name="convenio">
+                <option value="0">Todos os convênios</option>
+                <?php
+                $resConv = mysqli_query($conn, "SELECT * FROM convenios");
+                while ($c = mysqli_fetch_assoc($resConv)) {
+                    echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
+                }
+                ?>
+            </select>
+
             Bairro: <select name="bairro">
                 <option value="">Todos</option>
                 <?php
                 $r = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
                 while ($b = mysqli_fetch_assoc($r)) {
-                    echo "<option>" . $b['bairro'] . "</option>";
+                    echo "<option value='" . $b['bairro'] . "'>" . $b['bairro'] . "</option>";
                 }
                 ?>
             </select>
@@ -89,6 +93,8 @@ if (isset($_POST['titulo'])) {
          JOIN condicao_exame ON condicao_exame.exame_id = exames.id
          WHERE condicao_exame.condicao_id = $id_condicao";
             $res2 = mysqli_query($conn, $sql2);
+
+            echo "<hr>";
 
             echo "<h4>Exames recomendados:</h4>";
             while ($exame = mysqli_fetch_assoc($res2)) {
