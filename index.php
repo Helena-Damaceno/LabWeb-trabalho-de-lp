@@ -61,69 +61,16 @@ if (isset($_POST['titulo'])) {
     </div>
     </div>
 
+    <hr>
     <?php
 
     $sql = "SELECT * FROM condicoes_saude WHERE nome LIKE '%$titulo%' OR descricao LIKE '%$titulo%'";
+    $res = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-    $res = mysqli_query($conn, $sql)
-        or die(mysqli_error($conn));
-
-    $num = mysqli_num_rows($res);
-
-    if ($num > 0) {
-
-        while ($linha = mysqli_fetch_assoc($res)) {
-            $id_condicao = $linha['id'];
-
-            echo "<h2>" . $linha['nome'] . "</h2>";
-            echo "<p>" . $linha['descricao'] . "</p>";
-            echo "<p>Orientações: " . $linha['orientacoes_preparo'] . "</p>";
-
-            $sql2 = "SELECT * FROM exames
-         JOIN condicao_exame ON condicao_exame.exame_id = exames.id
-         WHERE condicao_exame.condicao_id = $id_condicao";
-            $res2 = mysqli_query($conn, $sql2);
-
-            echo "<hr>";
-
-            echo "<h4>Exames que você tem que fazer:</h4>";
-            while ($exame = mysqli_fetch_assoc($res2)) {
-                echo "<p><strong>" . $exame['nome'] . "</strong><br>";
-                echo "O que mede: " . $exame['descricao'] . "<br>";
-                echo "Preparo: " . $exame['instrucoes_preparo'] . "</p>";
-        
-        $sql3 = "SELECT laboratorios.*, SUM(laboratorio_exame.preco_particular) AS total
-         FROM laboratorios
-         JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
-         JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
-         WHERE condicao_exame.condicao_id = $id_condicao";
-            }
-
-        if ($bairro != "") {
-            $sql3 .= " AND laboratorios.bairro = '$bairro'";
-        }
-        if ($convenio > 0) {
-            $sql3 .= " AND laboratorios.id IN (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
-        }
-
-        $sql3 .= " GROUP BY laboratorios.id";   
-    
-        $res3 = mysqli_query($conn, $sql3) or die(mysqli_error($conn));
-
-        echo "<h4>Laboratórios:</h4>";
-        while ($lab = mysqli_fetch_assoc($res3)) {
-            echo "<p><strong>" . $lab['nome'] . "</strong><br>";
-            echo $lab['endereco'] . " - " . $lab['bairro'] . "<br>";
-            echo "Telefone: " . $lab['telefone'] . "<br>";
-            echo "Total (particular): R$ " . number_format($lab['total'], 2, ',', '.') . "<br>";
-            echo "Prazo do laudo: " . $lab['tempo_entrega_dias'] . " dia(s)</p>";
-        }
+    while ($c = mysqli_fetch_assoc($res)) {
+        echo "<a href='condicao.php?id=" . $c['id'] . "'>" . $c['nome'] . "</a><br>";
     }
-    }
-
-    $sql = "SELECT * FROM condicoes_saude";
     ?>
-
 </body>
 
 </html>
