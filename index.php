@@ -37,18 +37,8 @@ if (isset($_POST['titulo'])) {
         <form method="POST">
             Sintoma: <input type="text" name="titulo">
 
-            <select name="convenio">
-                <option value="0">Todos os convênios</option>
-                <?php
-                $resConv = mysqli_query($conn, "SELECT * FROM convenios");
-                while ($c = mysqli_fetch_assoc($resConv)) {
-                    echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
-                }
-                ?>
-            </select>
-
             Bairro: <select name="bairro">
-                <option value="">Todos</option>
+                <option value=""> Todos </option>
                 <?php
                 $r = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
                 while ($b = mysqli_fetch_assoc($r)) {
@@ -96,36 +86,41 @@ if (isset($_POST['titulo'])) {
 
             echo "<hr>";
 
-            echo "<h4>Exames recomendados:</h4>";
+            echo "<h4>Exames que você tem que fazer:</h4>";
             while ($exame = mysqli_fetch_assoc($res2)) {
                 echo "<p><strong>" . $exame['nome'] . "</strong><br>";
                 echo "O que mede: " . $exame['descricao'] . "<br>";
                 echo "Preparo: " . $exame['instrucoes_preparo'] . "</p>";
-            }
-
-        }
-        $sql3 = "SELECT DISTINCT laboratorios.* FROM laboratorios
+        
+        $sql3 = "SELECT laboratorios.*, SUM(laboratorio_exame.preco_particular) AS total
+         FROM laboratorios
          JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
          JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
          WHERE condicao_exame.condicao_id = $id_condicao";
+            }
 
         if ($bairro != "") {
-            $sql3 = $sql3 . " AND laboratorios.bairro = '$bairro'";
+            $sql3 .= " AND laboratorios.bairro = '$bairro'";
         }
         if ($convenio > 0) {
-            $sql3 = $sql3 . " AND laboratorios.id IN (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
+            $sql3 .= " AND laboratorios.id IN (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
         }
 
-        $res3 = mysqli_query($conn, $sql3);
+        $sql3 .= " GROUP BY laboratorios.id";   
+    
+        $res3 = mysqli_query($conn, $sql3) or die(mysqli_error($conn));
 
         echo "<h4>Laboratórios:</h4>";
         while ($lab = mysqli_fetch_assoc($res3)) {
             echo "<p><strong>" . $lab['nome'] . "</strong><br>";
             echo $lab['endereco'] . " - " . $lab['bairro'] . "<br>";
             echo "Telefone: " . $lab['telefone'] . "<br>";
+            echo "Total (particular): R$ " . number_format($lab['total'], 2, ',', '.') . "<br>";
             echo "Prazo do laudo: " . $lab['tempo_entrega_dias'] . " dia(s)</p>";
         }
     }
+    }
+
     $sql = "SELECT * FROM condicoes_saude";
     ?>
 
