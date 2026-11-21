@@ -1,7 +1,7 @@
 <?php
 require_once('./conexao.php');
 
-$id_condicao = (int) $_GET['id'];
+$idcondicao = (int) $_GET['id'];
 
 if (isset($_GET['bairro'])) {
     $bairro = $_GET['bairro'];
@@ -15,8 +15,8 @@ if (isset($_GET['convenio'])) {
     $convenio = 0;
 }
 
-$sql_condicao = "SELECT * FROM condicoes_saude WHERE id = $id_condicao";
-$res_condicao = mysqli_query($conn, $sql_condicao);
+$sqlcondicao = "SELECT * FROM condicoes_saude WHERE id = $idcondicao";
+$res_condicao = mysqli_query($conn, $sqlcondicao);
 $condicao = mysqli_fetch_assoc($res_condicao);
 ?>
 
@@ -45,7 +45,7 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     <?php
     $sql_exames = "SELECT exames.* FROM exames
                    JOIN condicao_exame ON condicao_exame.exame_id = exames.id
-                   WHERE condicao_exame.condicao_id = $id_condicao";
+                   WHERE condicao_exame.condicao_id = $idcondicao";
     $res_exames = mysqli_query($conn, $sql_exames);
 
     while ($exame = mysqli_fetch_assoc($res_exames)) {
@@ -59,16 +59,16 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     <hr>
 
     <h2>Laboratórios:</h2>
+   
 
     <form method="GET" action="condicao.php">
-        <input type="hidden" name="id" value="<?php echo $id_condicao; ?>">
-
+         <input type="hidden" name="id" value="<?php echo $idcondicao; ?>">
         Bairro:
         <select name="bairro">
             <option value="">Todos</option>
             <?php
-            $res_bairros = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
-            while ($b = mysqli_fetch_assoc($res_bairros)) {
+            $resulbairros = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
+            while ($b = mysqli_fetch_assoc($resulbairros)) {
                 echo "<option>" . $b['bairro'] . "</option>";
             }
             ?>
@@ -78,8 +78,8 @@ $condicao = mysqli_fetch_assoc($res_condicao);
         <select name="convenio">
             <option value="0">Todos</option>
             <?php
-            $res_convenios = mysqli_query($conn, "SELECT * FROM convenios");
-            while ($c = mysqli_fetch_assoc($res_convenios)) {
+            $resulconvenios = mysqli_query($conn, "SELECT * FROM convenios");
+            while ($c = mysqli_fetch_assoc($resulconvenios)) {
                 echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
             }
             ?>
@@ -87,32 +87,44 @@ $condicao = mysqli_fetch_assoc($res_condicao);
         <input type="submit" value="Filtrar">
     </form>
 
+
     <?php
-    $sql_labs = "SELECT laboratorios.*, SUM(laboratorio_exame.preco_particular) AS total
-                 FROM laboratorios
-                 JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
-                 JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
-                 WHERE condicao_exame.condicao_id = $id_condicao";
 
-    if ($bairro != "") {
-        $sql_labs .= " AND laboratorios.bairro = '$bairro'";
+    function labuscar($conn, $id_condicao, $bairro, $convenio)
+{        
+        $sqllabs = "SELECT laboratorios.*, SUM(laboratorio_exame.preco_particular) AS total
+                     FROM laboratorios
+                     JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
+                     JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
+                     WHERE condicao_exame.condicao_id = $id_condicao";
+
+        if ($bairro != "") {
+            $sqllabs.= " AND laboratorios.bairro = '$bairro'";
+        }
+
+        if ($convenio > 0) {
+            $sqllabs .= " AND laboratorios.id IN
+                        (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
+        }
+
+        $sqllabs .= " GROUP BY laboratorios.id";
+        return mysqli_query($conn, $sqllabs);
     }
+    
+    $reslabs = labuscar($conn, $idcondicao, $bairro, $convenio);
 
-    if ($convenio > 0) {
-        $sql_labs .= " AND laboratorios.id IN
-                    (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
-    }
 
-    $sql_labs .= " GROUP BY laboratorios.id";
-
-    while ($lab = mysqli_fetch_assoc($res_labs)) {
+    while ($lab = mysqli_fetch_assoc($reslabs)) {
         echo "<p>";
         echo "<strong>" . $lab['nome'] . "</strong><br>";
+        echo "Endereço: " . $lab['endereco'] . "<br>";
         echo "Bairro: " . $lab['bairro'] . "<br>";
+        echo "Tempo de entrega: " . $lab['tempo_entrega_dias'] . " dia(s)<br>";
+        echo "Telefone: " . $lab['telefone'] . "<br>";
         echo "Total: R$ " . $lab['total'];
         echo "</p>";
     }
-    $res_labs = mysqli_query($conn, $sql_labs) or die(mysqli_error($conn));
+
     ?>
 
 </body>

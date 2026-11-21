@@ -43,8 +43,8 @@ if (isset($_POST['titulo'])) {
     <hr>
     <?php
 
-    $sql = "SELECT * FROM condicoes_saude WHERE nome LIKE '%$titulo%' OR descricao LIKE '%$titulo%'";
-    $resultado = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    $sqlpesquisa = "SELECT * FROM condicoes_saude WHERE nome LIKE '%$titulo%' OR descricao LIKE '%$titulo%'";
+    $resultado = mysqli_query($conn, $sqlpesquisa) or die(mysqli_error($conn));
 
     while ($c = mysqli_fetch_assoc($resultado)) {
         echo "<a href='condicao.php?id=" . $c['id'] . "'>" . $c['nome'] . "</a><br>";
