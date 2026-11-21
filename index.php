@@ -2,13 +2,9 @@
 require_once('./conexao.php');
 
 $titulo = "";
-$convenio = 0;
-$bairro = "";
 
 if (isset($_POST['titulo'])) {
     $titulo = mysqli_real_escape_string($conn, $_POST['titulo']);
-    $convenio = (int) $_POST['convenio'];
-    $bairro = mysqli_real_escape_string($conn, $_POST['bairro']);
 }
 
 ?>
@@ -28,8 +24,8 @@ if (isset($_POST['titulo'])) {
 
         <h1>LabWeb</h1>
 
-        <p>Guia de Sintomas, Exames e Laboratórios</p>
-
+        <h2>Guia de Sintomas, Exames e Laboratórios</h2>
+        <p>Encontre informações sobre sintomas, exames e laboratórios pertos de você!</p>
     </div>
 
     <div class="pesquisa">
@@ -37,23 +33,6 @@ if (isset($_POST['titulo'])) {
         <form method="POST">
             Sintoma: <input type="text" name="titulo">
 
-            Bairro: <select name="bairro">
-                <option value=""> Todos </option>
-                <?php
-                $r = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
-                while ($b = mysqli_fetch_assoc($r)) {
-                    echo "<option value='" . $b['bairro'] . "'>" . $b['bairro'] . "</option>";
-                }
-                ?>
-            </select>
-            Convênio: <select name="convenio">
-                <option value="0">Todos</option>
-                <?php
-                $r = mysqli_query($conn, "SELECT * FROM convenios");
-                while ($c = mysqli_fetch_assoc($r)) {
-                    echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
-                }
-                ?>
             </select>
             <input type="submit" value="Filtrar">
         </form>
@@ -65,10 +44,11 @@ if (isset($_POST['titulo'])) {
     <?php
 
     $sql = "SELECT * FROM condicoes_saude WHERE nome LIKE '%$titulo%' OR descricao LIKE '%$titulo%'";
-    $res = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    $resultado = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-    while ($c = mysqli_fetch_assoc($res)) {
+    while ($c = mysqli_fetch_assoc($resultado)) {
         echo "<a href='condicao.php?id=" . $c['id'] . "'>" . $c['nome'] . "</a><br>";
+        echo "<p>clique para saber mais</p>\n        <hr>";
     }
     ?>
 </body>
