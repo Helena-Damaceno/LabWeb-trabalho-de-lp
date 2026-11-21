@@ -1,0 +1,20 @@
+ @font-face {
+     font-family: 'Matcha Boom';
+     src: url('../fontes/matcha_boom/Matcha Boom.ttf') format('truetype');
+     font-display: swap;
+ }
+
+ @font-face {
+     font-family: 'KG Perfect Penmanship';
+     src: url('../fontes/kg_perfect_penmanship/KGPerfectPenmanship.ttf') format('truetype');
+     font-display: swap;
+ }
+
+
+ h2{
+        font-family: 'Matcha Boom', cursive;
+        color: #6b7f4b;
+        font-size: 26px;
+        margin: 0;
+ }
+ 

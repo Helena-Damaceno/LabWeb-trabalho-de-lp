@@ -1,11 +1,90 @@
-body{
-    background-color: #efe7d8;
-    margin: 0;
+ @font-face {
+     font-family: 'Matcha Boom';
+     src: url('../fontes/matcha_boom/Matcha Boom.ttf') format('truetype');
+     font-display: swap;
+ }
+
+ @font-face {
+     font-family: 'KG Perfect Penmanship';
+     src: url('../fontes/kg_perfect_penmanship/KGPerfectPenmanship.ttf') format('truetype');
+     font-display: swap;
+ }
+
+
+ body {
+     background-color: #efe7d8;
+     margin: 0;
+ }
+
+ #cabeçalho {
+     background-color: #6b7f4b;
+     padding: 30px;
+     text-align: center;
+     margin-bottom: 20px;
+
+ }
+
+ #cabeçalho h1 {
+     font-family: 'Matcha Boom', cursive;
+     color: #efe7d8;
+     font-size: 56px;
+     margin: 0;
+
+ }
+
+ #cabeçalho h2 {
+     font-family: 'KG Perfect Penmanship', cursive;
+     color: #efe7d8;
+     font-size: 20px;
+     margin: 0;
+ }
+
+ .informacoes {
+     text-align: center;
+     font-family: 'KG Perfect Penmanship', cursive;
+     color: #6b7f4b;
+     font-size: 18px;
+     margin-bottom: 40px;
+     background-color: #fff9ed;
+     border-radius: 20px;
+     padding: 20px 30px;
+     margin: 20px 50px;
+ }
+
+ .pesquisa {
+    background-color: #bdb29a;
+    border-radius: 20px;
+    padding: 10px 20px;      /* barra mais fina: 10px em cima e embaixo */
+    margin: 20px 50px 40px;  /* 20px topo, 50px lados, 40px embaixo */
+    font-family: 'KG Perfect Penmanship', cursive;
+    font-size: 20px;
+    color: #4d5a39;
 }
 
-#cabeçalho{
+.pesquisa input[type="text"] {
+    width: 350px;
+    padding: 10px 14px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+}
+
+.pesquisa input[type="submit"] {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
     background-color: #6b7f4b;
-     padding: 30px;
-    text-align: center;
-    margin-bottom: 20px;
+    color: #efe7d8;
+    cursor: pointer;
+}
+
+.respostacondicoes {
+    background-color: #fff9ed;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 20px 50px;
+    font-family: 'KG Perfect Penmanship', cursive;
+    font-size: 18px;
+    color: #4d5a39;
 }

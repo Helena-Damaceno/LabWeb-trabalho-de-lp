@@ -27,18 +27,22 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LabWeb</title>
+    <link rel="stylesheet" href="css/condicao.css">
+
 </head>
 
 <body>
+    <div class="começo">
+        <a href="index.php">Voltar</a>
+        <script src="js/script.js"></script>
+    </div>
 
-    <a href="index.php">Voltar</a>
-    <script src="js/script.js"></script>
-
-    <h2><?php echo $condicao['nome']; ?></h2>
-    <p><?php echo $condicao['descricao']; ?></p>
-    <p>Orientações: <?php echo $condicao['orientacoes_preparo']; ?></p>
-
-    <hr>
+    <div class="condicoes">
+        <h2><?php echo $condicao['nome']; ?></h2>
+        <p><?php echo $condicao['descricao']; ?></p>
+        <p>Orientações: <?php echo $condicao['orientacoes_preparo']; ?></p>
+    </div>
+    
 
     <h2>Exames que você precisa fazer para tratar sua condição:</h2>
 
@@ -85,8 +89,8 @@ $condicao = mysqli_fetch_assoc($res_condicao);
             ?>
         </select>
         <input type="submit" value="Filtrar">
-        <p>   </p>
-        
+        <p> </p>
+
     </form>
 
 
@@ -130,7 +134,7 @@ $condicao = mysqli_fetch_assoc($res_condicao);
                       WHERE laboratorio_exame.laboratorio_id = " . $lab['id'] . "
                       AND condicao_exame.condicao_id = $idcondicao";
         $resprecos = mysqli_query($conn, $sqlprecos);
-       
+
 
 
         $total = 0;
