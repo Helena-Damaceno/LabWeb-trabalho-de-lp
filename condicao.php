@@ -1,7 +1,7 @@
 <?php
 require_once('./conexao.php');
 
-$idcondicao = (int) $_GET['id'];
+$idcondicao =  $_GET['id'];
 
 if (isset($_GET['bairro'])) {
     $bairro = $_GET['bairro'];
@@ -40,7 +40,7 @@ $condicao = mysqli_fetch_assoc($res_condicao);
 
     <hr>
 
-    <h4>Exames que você precisa fazer:</h4>
+    <h2>Exames que você precisa fazer para tratar sua condição:</h2>
 
     <?php
     $sql_exames = "SELECT exames.* FROM exames
@@ -51,18 +51,18 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     while ($exame = mysqli_fetch_assoc($res_exames)) {
         echo "<p><input type='checkbox' value='" . $exame['id'] . "' checked onchange='mudarExame(this)'> ";
         echo "<strong>" . $exame['nome'] . "</strong><br>";
-        echo "O que mede: " . $exame['descricao'] . "<br>";
-        echo "Preparo: " . $exame['instrucoes_preparo'] . "</p>";
+        echo "O que faz: " . $exame['descricao'] . "<br>";
+        echo "Instruções: " . $exame['instrucoes_preparo'] . "</p>";
     }
     ?>
 
     <hr>
 
     <h2>Laboratórios:</h2>
-   
+
 
     <form method="GET" action="condicao.php">
-         <input type="hidden" name="id" value="<?php echo $idcondicao; ?>">
+        <input type="hidden" name="id" value="<?php echo $idcondicao; ?>">
         Bairro:
         <select name="bairro">
             <option value="">Todos</option>
@@ -91,27 +91,31 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     <?php
 
     function labuscar($conn, $id_condicao, $bairro, $convenio)
-{        
+    {
         $sqllabs = "SELECT laboratorios.*, SUM(laboratorio_exame.preco_particular) AS total
-                     FROM laboratorios
-                     JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
-                     JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
-                     WHERE condicao_exame.condicao_id = $id_condicao";
+            FROM laboratorios
+            JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
+            JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
+            LEFT JOIN laboratorio_convenio ON laboratorio_convenio.laboratorio_id = laboratorios.id
+            WHERE condicao_exame.condicao_id = $id_condicao";
 
         if ($bairro != "") {
-            $sqllabs.= " AND laboratorios.bairro = '$bairro'";
+            $sqllabs .= " AND laboratorios.bairro = '$bairro'";
         }
 
         if ($convenio > 0) {
-            $sqllabs .= " AND laboratorios.id IN
-                        (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
+            $sqllabs .= " AND laboratorio_convenio.convenio_id = '$convenio'";
         }
 
         $sqllabs .= " GROUP BY laboratorios.id";
         return mysqli_query($conn, $sqllabs);
     }
-    
+
     $reslabs = labuscar($conn, $idcondicao, $bairro, $convenio);
+
+    if (mysqli_num_rows($reslabs) == 0) {
+        echo "<p>Nenhum laboratório encontrado com essas condiçoes</p>";
+    }
 
 
     while ($lab = mysqli_fetch_assoc($reslabs)) {
