@@ -3,14 +3,16 @@ require_once('./conexao.php');
 
 $id_condicao = (int) $_GET['id'];
 
-$bairro = "";
 if (isset($_GET['bairro'])) {
-    $bairro = mysqli_real_escape_string($conn, $_GET['bairro']);
+    $bairro = $_GET['bairro'];
+} else {
+    $bairro = "";
 }
 
-$convenio = 0;
 if (isset($_GET['convenio'])) {
     $convenio = (int) $_GET['convenio'];
+} else {
+    $convenio = 0;
 }
 
 $sql_condicao = "SELECT * FROM condicoes_saude WHERE id = $id_condicao";
@@ -30,6 +32,7 @@ $condicao = mysqli_fetch_assoc($res_condicao);
 <body>
 
     <a href="index.php">Voltar</a>
+    <script src="js/script.js"></script>
 
     <h2><?php echo $condicao['nome']; ?></h2>
     <p><?php echo $condicao['descricao']; ?></p>
@@ -46,7 +49,8 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     $res_exames = mysqli_query($conn, $sql_exames);
 
     while ($exame = mysqli_fetch_assoc($res_exames)) {
-        echo "<p><strong>" . $exame['nome'] . "</strong><br>";
+        echo "<p><input type='checkbox' value='" . $exame['id'] . "' checked onchange='mudarExame(this)'> ";
+        echo "<strong>" . $exame['nome'] . "</strong><br>";
         echo "O que mede: " . $exame['descricao'] . "<br>";
         echo "Preparo: " . $exame['instrucoes_preparo'] . "</p>";
     }
@@ -54,7 +58,7 @@ $condicao = mysqli_fetch_assoc($res_condicao);
 
     <hr>
 
-    <h4>Laboratórios:</h4>
+    <h2>Laboratórios:</h2>
 
     <form method="GET" action="condicao.php">
         <input type="hidden" name="id" value="<?php echo $id_condicao; ?>">
@@ -80,7 +84,6 @@ $condicao = mysqli_fetch_assoc($res_condicao);
             }
             ?>
         </select>
-
         <input type="submit" value="Filtrar">
     </form>
 
@@ -92,25 +95,24 @@ $condicao = mysqli_fetch_assoc($res_condicao);
                  WHERE condicao_exame.condicao_id = $id_condicao";
 
     if ($bairro != "") {
-        $sql_labs = $sql_labs . " AND laboratorios.bairro = '$bairro'";
+        $sql_labs .= " AND laboratorios.bairro = '$bairro'";
     }
 
     if ($convenio > 0) {
-        $sql_labs = $sql_labs . " AND laboratorios.id IN
+        $sql_labs .= " AND laboratorios.id IN
                     (SELECT laboratorio_id FROM laboratorio_convenio WHERE convenio_id = $convenio)";
     }
 
-    $sql_labs = $sql_labs . " GROUP BY laboratorios.id";
-
-    $res_labs = mysqli_query($conn, $sql_labs) or die(mysqli_error($conn));
+    $sql_labs .= " GROUP BY laboratorios.id";
 
     while ($lab = mysqli_fetch_assoc($res_labs)) {
-        echo "<p><strong>" . $lab['nome'] . "</strong><br>";
-        echo $lab['endereco'] . " - " . $lab['bairro'] . "<br>";
-        echo "Telefone: " . $lab['telefone'] . "<br>";
-        echo "Total (particular): R$ " . number_format($lab['total'], 2, ',', '.') . "<br>";
-        echo "Prazo do laudo: " . $lab['tempo_entrega_dias'] . " dia(s)</p>";
+        echo "<p>";
+        echo "<strong>" . $lab['nome'] . "</strong><br>";
+        echo "Bairro: " . $lab['bairro'] . "<br>";
+        echo "Total: R$ " . $lab['total'];
+        echo "</p>";
     }
+    $res_labs = mysqli_query($conn, $sql_labs) or die(mysqli_error($conn));
     ?>
 
 </body>

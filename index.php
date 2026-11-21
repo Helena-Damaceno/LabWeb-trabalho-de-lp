@@ -48,9 +48,15 @@ if (isset($_POST['titulo'])) {
 
     while ($c = mysqli_fetch_assoc($resultado)) {
         echo "<a href='condicao.php?id=" . $c['id'] . "'>" . $c['nome'] . "</a><br>";
-        echo "<p>clique para saber mais</p>\n        <hr>";
+        echo "<p>clique para saber mais</p>       <hr>";
+    }
+    
+
+    if (!$resultado == false && mysqli_num_rows($resultado) == 0) {
+        echo "<p>Nenhum resultado encontrado para seu sintoma</p>";
     }
     ?>
+
 </body>
 
 </html>
