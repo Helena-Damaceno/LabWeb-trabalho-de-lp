@@ -1,7 +1,7 @@
 <?php
 require_once('./conexao.php');
 
-$idcondicao =  $_GET['id'];
+$idcondicao = $_GET['id'];
 
 if (isset($_GET['bairro'])) {
     $bairro = $_GET['bairro'];
@@ -46,9 +46,9 @@ $condicao = mysqli_fetch_assoc($res_condicao);
     $sql_exames = "SELECT exames.* FROM exames
                    JOIN condicao_exame ON condicao_exame.exame_id = exames.id
                    WHERE condicao_exame.condicao_id = $idcondicao";
-    $res_exames = mysqli_query($conn, $sql_exames);
+    $resulexames = mysqli_query($conn, $sql_exames);
 
-    while ($exame = mysqli_fetch_assoc($res_exames)) {
+    while ($exame = mysqli_fetch_assoc($resulexames)) {
         echo "<p><input type='checkbox' value='" . $exame['id'] . "' checked onchange='mudarExame(this)'> ";
         echo "<strong>" . $exame['nome'] . "</strong><br>";
         echo "O que faz: " . $exame['descricao'] . "<br>";
@@ -85,52 +85,61 @@ $condicao = mysqli_fetch_assoc($res_condicao);
             ?>
         </select>
         <input type="submit" value="Filtrar">
+        <p>   </p>
+        
     </form>
 
 
     <?php
-
-    function labuscar($conn, $id_condicao, $bairro, $convenio)
+    function labuscar($conn, $bairro, $convenio)
     {
-        $sqllabs = "SELECT laboratorios.*, SUM(laboratorio_exame.preco_particular) AS total
-            FROM laboratorios
-            JOIN laboratorio_exame ON laboratorio_exame.laboratorio_id = laboratorios.id
-            JOIN condicao_exame ON condicao_exame.exame_id = laboratorio_exame.exame_id
-            LEFT JOIN laboratorio_convenio ON laboratorio_convenio.laboratorio_id = laboratorios.id
-            WHERE condicao_exame.condicao_id = $id_condicao";
-
-        if ($bairro != "") {
-            $sqllabs .= " AND laboratorios.bairro = '$bairro'";
-        }
+        $sqllabs = "SELECT laboratorios.* FROM laboratorios";
 
         if ($convenio > 0) {
-            $sqllabs .= " AND laboratorio_convenio.convenio_id = '$convenio'";
+            $sqllabs .= " JOIN laboratorio_convenio
+                  ON laboratorio_convenio.laboratorio_id = laboratorios.id
+                  AND laboratorio_convenio.convenio_id = $convenio";
         }
 
-        $sqllabs .= " GROUP BY laboratorios.id";
+        if ($bairro != "") {
+            $bairro = mysqli_real_escape_string($conn, $bairro);
+            $sqllabs .= " WHERE laboratorios.bairro = '$bairro'";
+        }
+
         return mysqli_query($conn, $sqllabs);
     }
 
-    $reslabs = labuscar($conn, $idcondicao, $bairro, $convenio);
+    $reslabs = labuscar($conn, $bairro, $convenio);
 
     if (mysqli_num_rows($reslabs) == 0) {
-        echo "<p>Nenhum laboratório encontrado com essas condiçoes</p>";
+        echo "<p>Nenhum laboratório encontrado com essas condições</p>";
     }
 
-
     while ($lab = mysqli_fetch_assoc($reslabs)) {
-        echo "<p>";
+        echo "<div class='lab'>";
         echo "<strong>" . $lab['nome'] . "</strong><br>";
         echo "Endereço: " . $lab['endereco'] . "<br>";
         echo "Bairro: " . $lab['bairro'] . "<br>";
         echo "Tempo de entrega: " . $lab['tempo_entrega_dias'] . " dia(s)<br>";
         echo "Telefone: " . $lab['telefone'] . "<br>";
-        echo "Total: R$ " . $lab['total'];
-        echo "</p>";
+        echo "<br>";
+        $sqlprecos = "SELECT exames.id, exames.nome, laboratorio_exame.preco_particular
+                      FROM laboratorio_exame
+                      JOIN exames ON exames.id = laboratorio_exame.exame_id
+                      JOIN condicao_exame ON condicao_exame.exame_id = exames.id
+                      WHERE laboratorio_exame.laboratorio_id = " . $lab['id'] . "
+                      AND condicao_exame.condicao_id = $idcondicao";
+        $resprecos = mysqli_query($conn, $sqlprecos);
+       
+
+
+        $total = 0;
+        while ($p = mysqli_fetch_assoc($resprecos)) {
+            echo $p['nome'] . ": R$ <span class='preco' data-exame='" . $p['id'] . "'>"
+                . $p['preco_particular'] . "</span><br>";
+            $total += $p['preco_particular'];
+        }
+
+        echo "<strong>Total: R$ <span class='total'>" . number_format($total, 2, ',', '.') . "</span></strong>";
+        echo "</div><hr>";
     }
-
-    ?>
-
-</body>
-
-</html>

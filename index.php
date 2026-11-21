@@ -16,6 +16,7 @@ if (isset($_POST['titulo'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LabWeb</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -25,8 +26,10 @@ if (isset($_POST['titulo'])) {
         <h1>LabWeb</h1>
 
         <h2>Guia de Sintomas, Exames e Laboratórios</h2>
-        <p>Encontre informações sobre sintomas, exames e laboratórios pertos de você!</p>
+
     </div>
+
+    <p>Encontre informações sobre sintomas, exames e laboratórios pertos de você!</p>
 
     <div class="pesquisa">
 
@@ -50,7 +53,7 @@ if (isset($_POST['titulo'])) {
         echo "<a href='condicao.php?id=" . $c['id'] . "'>" . $c['nome'] . "</a><br>";
         echo "<p>clique para saber mais</p>       <hr>";
     }
-    
+
 
     if (!$resultado == false && mysqli_num_rows($resultado) == 0) {
         echo "<p>Nenhum resultado encontrado para seu sintoma</p>";
