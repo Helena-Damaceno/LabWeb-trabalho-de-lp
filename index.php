@@ -56,7 +56,7 @@ if (isset($_POST['titulo'])) {
             echo "<p>clique para saber mais</p>      ";
         }
 
-
+       
         if (!$resultado == false && mysqli_num_rows($resultado) == 0) {
             echo "<p>Nenhum resultado encontrado para seu sintoma</p>";
         }
