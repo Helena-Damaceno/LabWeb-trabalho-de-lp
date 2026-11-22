@@ -1,20 +1,111 @@
- @font-face {
-     font-family: 'Matcha Boom';
-     src: url('../fontes/matcha_boom/Matcha Boom.ttf') format('truetype');
-     font-display: swap;
- }
+@font-face {
+    font-family: 'Matcha Boom';
+    src: url('../fontes/matcha_boom/Matcha Boom.ttf') format('truetype');
+    font-display: swap;
+}
 
- @font-face {
-     font-family: 'KG Perfect Penmanship';
-     src: url('../fontes/kg_perfect_penmanship/KGPerfectPenmanship.ttf') format('truetype');
-     font-display: swap;
- }
+@font-face {
+    font-family: 'KG Perfect Penmanship';
+    src: url('../fontes/kg_perfect_penmanship/KGPerfectPenmanship.ttf') format('truetype');
+    font-display: swap;
+}
+
+body {
+    background-color: #efe7d8;
+    margin: 0;
+    font-family: 'KG Perfect Penmanship', cursive;
+    color: #6b7f4b;
+    font-size: 18px;
+}
+
+h2 {
+    font-family: 'Matcha Boom', cursive;
+    color: #6b7f4b;
+    font-size: 26px;
+    margin: 0 0 12px;
+}
+
+.começo {
+    padding: 20px 50px;
+    background-color: #506136;
+}
+
+.começo a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6b7f4b;
+    color: #efe7d8;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.condicoes {
+    background-color: #6b7f4b;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.condicoes h2 {
+    color: #ffffff;
+    font-size: 40px;
+    margin: 0 0 10px;
+}
+
+.condicoes p {
+    color: #efe7d8;
+    margin: 0 0 8px;
+}
+
+.titulo-exames {
+    font-family: 'KG Perfect Penmanship', cursive;
+    font-size: 24px;
+    text-align: center;
+    background-color: #fff9ed;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 20px 50px;
+}
+
+.cartao, .lab {
+    background-color: #fff9ed;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 20px 50px;
+     
+}
 
 
- h2{
-        font-family: 'Matcha Boom', cursive;
-        color: #6b7f4b;
-        font-size: 26px;
-        margin: 0;
- }
- 
+.exames{
+    padding-left: 10%;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+.cartao p {
+    margin: 0 0 14px;
+}
+
+.cartao h1 {
+    font-family: 'KG Perfect Penmanship', cursive;
+}
+
+.cartao input[type="checkbox"] {
+    accent-color: #6b7f4b;
+}
+
+.cartao select,
+.cartao input[type="submit"] {
+    padding: 8px 12px;
+    font-size: 16px;
+    font-family: inherit;
+    border: none;
+    border-radius: 10px;
+    background-color: #efe7d8;
+    color: #6b7f4b;
+}
+
+.cartao input[type="submit"] {
+    background-color: #6b7f4b;
+    color: #efe7d8;
+    cursor: pointer;
+}

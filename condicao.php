@@ -42,10 +42,10 @@ $condicao = mysqli_fetch_assoc($res_condicao);
         <p><?php echo $condicao['descricao']; ?></p>
         <p>Orientações: <?php echo $condicao['orientacoes_preparo']; ?></p>
     </div>
+
+    <h2 class="titulo-exames">Exames que você precisa fazer para tratar sua condição:</h2>
     
-
-    <h2>Exames que você precisa fazer para tratar sua condição:</h2>
-
+  <div class="exames">
     <?php
     $sql_exames = "SELECT exames.* FROM exames
                    JOIN condicao_exame ON condicao_exame.exame_id = exames.id
@@ -59,40 +59,42 @@ $condicao = mysqli_fetch_assoc($res_condicao);
         echo "Instruções: " . $exame['instrucoes_preparo'] . "</p>";
     }
     ?>
-
-    <hr>
-
-    <h2>Laboratórios:</h2>
+ </div>
 
 
-    <form method="GET" action="condicao.php">
-        <input type="hidden" name="id" value="<?php echo $idcondicao; ?>">
-        Bairro:
-        <select name="bairro">
-            <option value="">Todos</option>
-            <?php
-            $resulbairros = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
-            while ($b = mysqli_fetch_assoc($resulbairros)) {
-                echo "<option>" . $b['bairro'] . "</option>";
-            }
-            ?>
-        </select>
+    <div class="cartao">
 
-        Convênio:
-        <select name="convenio">
-            <option value="0">Todos</option>
-            <?php
-            $resulconvenios = mysqli_query($conn, "SELECT * FROM convenios");
-            while ($c = mysqli_fetch_assoc($resulconvenios)) {
-                echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
-            }
-            ?>
-        </select>
-        <input type="submit" value="Filtrar">
-        <p> </p>
+        <h2>Laboratórios:</h2>
 
-    </form>
 
+        <form method="GET" action="condicao.php">
+            <input type="hidden" name="id" value="<?php echo $idcondicao; ?>">
+            Bairro:
+            <select name="bairro">
+                <option value="">Todos</option>
+                <?php
+                $resulbairros = mysqli_query($conn, "SELECT DISTINCT bairro FROM laboratorios");
+                while ($b = mysqli_fetch_assoc($resulbairros)) {
+                    echo "<option>" . $b['bairro'] . "</option>";
+                }
+                ?>
+            </select>
+
+            Convênio:
+            <select name="convenio">
+                <option value="0">Todos</option>
+                <?php
+                $resulconvenios = mysqli_query($conn, "SELECT * FROM convenios");
+                while ($c = mysqli_fetch_assoc($resulconvenios)) {
+                    echo "<option value='" . $c['id'] . "'>" . $c['nome'] . "</option>";
+                }
+                ?>
+            </select>
+            <input type="submit" value="Filtrar">
+            <p> </p>
+
+        </form>
+    </div>
 
     <?php
     function labuscar($conn, $bairro, $convenio)
@@ -145,5 +147,5 @@ $condicao = mysqli_fetch_assoc($res_condicao);
         }
 
         echo "<strong>Total: R$ <span class='total'>" . number_format($total, 2, ',', '.') . "</span></strong>";
-        echo "</div><hr>";
+        echo "</div>";
     }

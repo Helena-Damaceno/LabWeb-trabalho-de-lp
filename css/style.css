@@ -52,13 +52,14 @@
  }
 
  .pesquisa {
-    background-color: #bdb29a;
+
+    background-color: #506136;
     border-radius: 20px;
-    padding: 10px 20px;      /* barra mais fina: 10px em cima e embaixo */
-    margin: 20px 50px 40px;  /* 20px topo, 50px lados, 40px embaixo */
+    padding: 10px 20px;      
+    margin: 20px 50px 40px; 
     font-family: 'KG Perfect Penmanship', cursive;
     font-size: 20px;
-    color: #4d5a39;
+    color: #fff9ed;
 }
 
 .pesquisa input[type="text"] {
@@ -67,6 +68,7 @@
     font-size: 18px;
     border: none;
     border-radius: 10px;
+    background-color: #fff9ed;
 }
 
 .pesquisa input[type="submit"] {
@@ -75,7 +77,7 @@
     border: none;
     border-radius: 10px;
     background-color: #6b7f4b;
-    color: #efe7d8;
+    color: #fff9ed;
     cursor: pointer;
 }
 
@@ -87,4 +89,11 @@
     font-family: 'KG Perfect Penmanship', cursive;
     font-size: 18px;
     color: #4d5a39;
+}
+
+#rodape {
+    background-color: #6b7f4b;
+    padding: 20px;
+    text-align: center;
+    color: #6b7f4b;
 }

@@ -62,7 +62,6 @@ if (isset($_POST['titulo'])) {
         }
         ?>
 
-    </div>
 
 </body>
 
