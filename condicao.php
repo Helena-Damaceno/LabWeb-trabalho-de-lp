@@ -34,7 +34,6 @@ $condicao = mysqli_fetch_assoc($res_condicao);
 <body>
     <div class="começo">
         <a href="index.php">Voltar</a>
-        <script src="js/script.js"></script>
     </div>
 
     <div class="condicoes">
@@ -95,7 +94,9 @@ $condicao = mysqli_fetch_assoc($res_condicao);
 
         </form>
     </div>
-
+        <script src="js/script.js"></script>
+</body>
+</html>
     <?php
     function labuscar($conn, $bairro, $convenio)
     {
