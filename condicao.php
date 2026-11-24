@@ -101,25 +101,20 @@ if (isset($_GET['convenio'])) {
     $convenio = 0;
 }
 
-function labuscar($conn, $bairro, $convenio)
-{
-    $sqllabs = "SELECT laboratorios.* FROM laboratorios";
+$sqllabs = "SELECT laboratorios.* FROM laboratorios";
 
-    if ($convenio > 0) {
-        $sqllabs .= " JOIN laboratorio_convenio
+if ($convenio > 0) {
+    $sqllabs .= " JOIN laboratorio_convenio
                   ON laboratorio_convenio.laboratorio_id = laboratorios.id
                   AND laboratorio_convenio.convenio_id = $convenio";
-    }
-
-    if ($bairro != "") {
-        $bairro = mysqli_real_escape_string($conn, $bairro);
-        $sqllabs .= " WHERE laboratorios.bairro = '$bairro'";
-    }
-
-    return mysqli_query($conn, $sqllabs);
 }
 
-$reslabs = labuscar($conn, $bairro, $convenio);
+if ($bairro != "") {
+    $bairro = mysqli_real_escape_string($conn, $bairro);
+    $sqllabs .= " WHERE laboratorios.bairro = '$bairro'";
+}
+
+$reslabs = mysqli_query($conn, $sqllabs);
 
 if (mysqli_num_rows($reslabs) == 0) {
     echo "<p>Nenhum laboratório encontrado com essas condições</p>";
