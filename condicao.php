@@ -128,6 +128,7 @@ while ($lab = mysqli_fetch_assoc($reslabs)) {
     echo "Tempo de entrega: " . $lab['tempo_entrega_dias'] . " dia(s)<br>";
     echo "Telefone: " . $lab['telefone'] . "<br>";
     echo "<br>";
+    
     $sqlprecos = "SELECT exames.id, exames.nome, laboratorio_exame.preco_particular
                       FROM laboratorio_exame
                       JOIN exames ON exames.id = laboratorio_exame.exame_id

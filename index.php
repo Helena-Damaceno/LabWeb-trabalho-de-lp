@@ -1,12 +1,6 @@
 <?php
 require_once('./conexao.php');
 
-$titulo = "";
-
-if (isset($_POST['titulo'])) {
-    $titulo = mysqli_real_escape_string($conn, $_POST['titulo']);
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -46,8 +40,16 @@ if (isset($_POST['titulo'])) {
     </p>
 
     <div class="respostacondicoes">
-     
+
         <?php
+
+        $titulo = "";
+
+        if (isset($_POST['titulo'])) {
+            $titulo = mysqli_real_escape_string($conn, $_POST['titulo']);
+        }
+
+
         $sqlpesquisa = "SELECT * FROM condicoes_saude WHERE nome LIKE '%$titulo%' OR descricao LIKE '%$titulo%'";
         $resultado = mysqli_query($conn, $sqlpesquisa) or die(mysqli_error($conn));
 
@@ -56,11 +58,13 @@ if (isset($_POST['titulo'])) {
             echo "<p>clique para saber mais</p>      ";
         }
 
-       
-        if (!$resultado == false && mysqli_num_rows($resultado) == 0) {
-            echo "<p>Nenhum resultado encontrado para seu sintoma</p>";
-        }
+
+        if (mysqli_num_rows($resultado) == 0) {
+         echo "<p>Nenhum resultado encontrado para seu sintoma</p>";
+       }
         ?>
+
+    </div>
 
 
 </body>
